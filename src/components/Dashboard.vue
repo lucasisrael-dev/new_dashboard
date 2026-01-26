@@ -4,107 +4,108 @@
     <!-- BARRA DE CONFIGURAÇÕES -->
     <div id="barra_configuracoes">
       <div id="tipo_operador" class="configuracoes">
-        <input type="radio" name="tipo" id="vendedor" value="0" checked>
+        <input type="radio" name="tipo" id="vendedor" v-model.number="DADOS.tipoOperador" :value="0">
         <label for="vendedor">Vendedor</label>
-        <input type="radio" name="tipo" id="gerente" value="1">
+        <input type="radio" name="tipo" id="gerente" v-model.number="DADOS.tipoOperador" :value="1">
         <label for="gerente">Gerente</label>
       </div>
       <div id="rel_vendas" class="configuracoes">
         <label for="vendas">Relatório de Vendas: </label>
-        <input type="file" name="vendas" id="vendas" accept=".csv">
+        <input type="file" name="vendas" id="vendas" accept=".csv" @change="getUploadedFile">
       </div>
       <div id="valor_meta" class="configuracoes">
         <label for="meta">Meta: </label>
-        <input type="number" name="meta" id="meta" step="1" value="100000">
+        <input type="number" name="meta" id="meta" step="1" v-bind:value="DADOS.valorMeta" v-on:input="(e) => {
+          DADOS.valorMeta = Number(e.target.value);
+        }">
+        <!-- ATALHO DO v-bind: | : -->
+        <!-- ATALHO DO v-on: | @ -->
       </div>
     </div>
 
     <!-- CORPO DA PÁGINA -->
     <div id="corpo">
+      <div id="primeiraLinha">
+        <div id="card_resumo">
+          <div id="grafico">
+            <div id="conteinerBarraMeta">
+              <div id="barraMeta" :style="barraMetaTamanho"></div>
+              <p>Meta</p>
+            </div>
+            <div id="conteinerBarraVendas">
+              <div id="barraVendas" :style="barraVendasTamanho"></div>
+              <p>Vendas</p>
+            </div>
+          </div>
+          <div id="dados_resumidos">
+            <div class="card meta"><span class="cardTitle">Meta</span>
+              <p>{{ DADOS.valorMeta.toLocaleString('pt-BR', { style: 'decimal', minimumFractionDigits: 2, maximumFractionDigits: 2}) }}</p>
+            </div>
+            <div class="card vendas"><span class="cardTitle">Vendas</span>
+              <p>{{ DADOS.valorTotalVendas.toLocaleString('pt-BR', { style: 'decimal', minimumFractionDigits: 2, maximumFractionDigits: 2}) }}</p>
+            </div>
+            <div class="card saldo"><span class="cardTitle">Saldo</span>
+              <p>{{ DADOS.valorSaldo.toLocaleString('pt-BR', { style: 'decimal', minimumFractionDigits: 2, maximumFractionDigits: 2}) }}</p>
+            </div>
+            <div class="card pAtingida"><span class="cardTitle">% Atingida</span>
+              <p>{{ DADOS.percentualAtingido.toLocaleString('pt-BR', { style: 'percent', minimumFractionDigits: 2, maximumFractionDigits: 2}) }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
 
   </div> <!-- FIM DO DASHBOARD -->
 </template>
 
-<script>
-class Dados {
-  constructor(tipoOperador, vendas, valorTotalMeta) {
-    this.tipoOperador = tipoOperador;
-    this.valorTotalMeta = valorTotalMeta;
-    this.valorTotalVendas = 0;
-    this.valorSaldo = this.valorTotalMeta - this.valorTotalVendas;
-    this.percentualAtingido = this.valorTotalVendas / this.valorTotalMeta;
-  }
+<script setup>
+import { reactive, ref, computed } from 'vue';
+import { Dados } from '../classes/Dados';
+import Papa from 'papaparse'
+import { papaparseConfig } from '../utils/utils';
 
-  atualiza_tipo(tipoOperador) {
-    this.tipoOperador = tipoOperador;
-    this.recalcular();
-  }
+const DADOS = reactive(new Dados());
 
-  atualiza_vendas(vendas) {
-    this.valorTotalVendas = this.somarVendas(vendas)
-    this.recalcular();
-  }
+const getUploadedFile = (event) => {
+  const file = event.target.files[0];
 
-  atualiza_meta(meta) {
-    this.valorTotalMeta = meta;
-    this.recalcular();
-  }
+  if (file) {
+    const reader = new FileReader();
 
-  somarVendas(vendas) {
-    let total_vendas = 0;
-    vendas.forEach(itemNota => {
-      total_vendas += itemNota[7]
-    });
-    return total_vendas;
-  }
+    reader.onload = (e) => {
+      DADOS.relatorioVendas = Papa.parse(e.target.result, papaparseConfig);
+    };
 
-  recalcular() {
-    this.valorSaldo = this.valorTotalMeta - this.valorTotalVendas;
-    this.percentualAtingido = this.valorTotalVendas / this.valorTotalMeta;
+    reader.onerror = (e) => {
+      console.error("Error ao ler o arquivo: ", e.target.error);
+    };
+
+    reader.readAsText(file, 'latin1');
   }
+};
+
+const setBarHeight = function (meta, venda) {
+  let tamanho = [16, 0];
+  if (meta > venda) {
+    tamanho[1] = ( 16 * venda) / meta;
+  } else {
+    tamanho[0] = ( 16 * meta) / venda;
+    tamanho[1] = 16;
+  }
+  return tamanho;
 }
 
+const barraMetaTamanho = computed(() => {
+  let tamanho = setBarHeight(DADOS.valorMeta, DADOS.valorTotalVendas)
+  return {height: tamanho[0]+"rem"};
+})
 
-//let tipo_operador = 
-/*
-let valor_meta = document.getElementById('meta').value;
+const barraVendasTamanho = computed(() => {
+  let tamanho = setBarHeight(DADOS.valorMeta, DADOS.valorTotalVendas)
+  return {height: tamanho[1]+"rem"};
+})
 
-const DADOS = new Dados()
-
-function processarPlanilhaVendas(conteudoPlanilha) {
-  let dadosPlanilha = [];
-  dadosLinhas = conteudoPlanilha.split('/r/n');
-  dadosLinhas.forEach(linha => {
-    dadosPlanilha.push(linha.split(";"))
-  })
-  return dadosPlanilha;
-}
-
-const fileInput = document.getElementById('vendas');
-
-fileInput.addEventListener('change', (event) => {
-  
-  const arquivoSelecionado = event.target.files[0];
-  
-  if (!arquivoSelecionado) {
-    return
-  }
-  
-  const leitor = new FileReader();
-
-  leitor.onload = (conteudo) => {
-    processarPlanilhaVendas(conteudo.target.result);
-  };
-
-  leitor.onerror = () => {
-    console.error("Erro ao ler o arquivo.");
-  }
-
-  leitor.readAsText(arquivoSelecionado, 'latin1')
-});
-
-*/
 </script>
 
 <style scoped>
@@ -139,5 +140,73 @@ fileInput.addEventListener('change', (event) => {
 
 #meta {
   width: 6rem
+}
+
+#primeiraLinha {
+  display: flex;
+}
+
+#card_resumo {
+  width: 35%;
+  display: flex;
+  justify-content: space-around;
+   align-items: stretch;
+  border-style: solid;
+  border-width: 1px;
+  border-color: azure;
+  border-radius: 5px;
+  padding: 5px;
+}
+
+#grafico {
+  display: flex;
+  align-items: flex-end;
+}
+
+#barraMeta {
+  background-color: #355c7d;
+  width: 5rem;
+  height: 16rem;
+  margin: 5px;
+}
+
+#barraVendas {
+  background-color: #009900;
+  width: 5rem;
+  height: 7rem;
+  margin: 5px;
+}
+
+.card {
+  width: 10rem;
+  text-align: right;
+  padding: 5px;
+  margin: 5px;
+  border-radius: 5px;
+}
+
+.card span {
+  font-size: 0.8rem;
+}
+
+.card p {
+  font-size: 1.3rem;
+  margin: 5px;
+}
+
+.meta {
+  background-color: #355c7d;
+}
+
+.vendas {
+  background-color: #009900;
+}
+
+.saldo {
+  background-color: #ec2049;
+}
+
+.pAtingida {
+  background-color: #f9d006;
 }
 </style>
