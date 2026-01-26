@@ -1,43 +1,47 @@
 <template>
   <div id="card_resumo">
-          <div class="tituloResumo">
-            <p>Resumo</p>
-          </div>
-          <div class="conteudoResumo">
-            <div id="grafico">
-              <div id="conteinerBarraMeta">
-                <div id="barraMeta" :style="barraMetaTamanho"></div>
-                <p>Meta</p>
-              </div>
-              <div id="conteinerBarraVendas">
-                <div id="barraVendas" :style="barraVendasTamanho"></div>
-                <p>Vendas</p>
-              </div>
-            </div>
-            <div id="dados_resumidos">
-              <div class="card meta"><span class="cardTitle">Meta</span>
-                <p>{{ DADOS.valorMeta.toLocaleString('pt-BR', {
-                  style: 'decimal', minimumFractionDigits: 2,
-                  maximumFractionDigits: 2}) }}</p>
-              </div>
-              <div class="card vendas"><span class="cardTitle">Vendas</span>
-                <p>{{ DADOS.valorTotalVendas.toLocaleString('pt-BR', {
-                  style: 'decimal', minimumFractionDigits: 2,
-                  maximumFractionDigits: 2}) }}</p>
-              </div>
-              <div class="card saldo"><span class="cardTitle">Saldo</span>
-                <p>{{ DADOS.valorSaldo.toLocaleString('pt-BR', {
-                  style: 'decimal', minimumFractionDigits: 2,
-                  maximumFractionDigits: 2}) }}</p>
-              </div>
-              <div class="card pAtingido"><span class="cardTitle">% Atingido</span>
-                <p>{{ DADOS.percentualAtingido.toLocaleString('pt-BR', {
-                  style: 'percent', minimumFractionDigits: 2,
-                  maximumFractionDigits: 2}) }}</p>
-              </div>
-            </div>
-          </div>
+    <div class="tituloResumo">
+      <p>Resumo</p>
+    </div>
+    <div class="conteudoResumo">
+      <div id="grafico">
+        <div id="conteinerBarraMeta">
+          <div id="barraMeta" :style="barraMetaTamanho"></div>
+          <p>Meta</p>
         </div>
+        <div id="conteinerBarraVendas">
+          <div id="barraVendas" :style="barraVendasTamanho"></div>
+          <p>Vendas</p>
+        </div>
+      </div>
+      <div id="dados_resumidos">
+        <div class="card meta"><span class="cardTitle">Meta</span>
+          <p>{{ DADOS.valorMeta.toLocaleString('pt-BR', {
+            style: 'decimal', minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+          }) }}</p>
+        </div>
+        <div class="card vendas"><span class="cardTitle">Vendas</span>
+          <p>{{ DADOS.valorTotalVendas.toLocaleString('pt-BR', {
+            style: 'decimal', minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+          }) }}</p>
+        </div>
+        <div class="card saldo"><span class="cardTitle">Saldo</span>
+          <p>{{ DADOS.valorSaldo.toLocaleString('pt-BR', {
+            style: 'decimal', minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+          }) }}</p>
+        </div>
+        <div class="card pAtingido"><span class="cardTitle">% Atingido</span>
+          <p>{{ DADOS.percentualAtingido.toLocaleString('pt-BR', {
+            style: 'percent', minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+          }) }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <style scoped>
