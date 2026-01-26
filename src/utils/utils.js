@@ -25,3 +25,14 @@ papaparseConfig.transform = function (value, column) {
   }
   return value;
 }
+
+export const setBarHeight = function (meta, venda) {
+  let tamanho = [16, 0];
+  if (meta > venda) {
+    tamanho[1] = (16 * venda) / meta;
+  } else {
+    tamanho[0] = (16 * meta) / venda;
+    tamanho[1] = 16;
+  }
+  return tamanho;
+}
