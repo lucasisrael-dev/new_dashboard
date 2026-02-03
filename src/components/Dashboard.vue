@@ -4,6 +4,7 @@
     <div id="corpo">
       <div id="primeiraLinha">
         <ResumoDados />
+        <CalculoComissao />
       </div>
     </div>
   </div>
@@ -16,17 +17,20 @@
 
 #primeiraLinha {
   display: flex;
+  gap: 1rem;
 }
 </style>
 
 <script setup>
 import { reactive, computed, provide } from 'vue';
 import { Dados } from '../classes/Dados';
+import { niveisDesconto, descontosPorCondPgto, indicesComissao } from '../utils/globais';
 
-const DADOS = reactive(new Dados());
+const DADOS = reactive(new Dados(descontosPorCondPgto, niveisDesconto, indicesComissao[0]));
 provide('appDados', DADOS);
 
 import BarraConfiguracoes from './BarraConfiguracoes.vue';
 import ResumoDados from './ResumoDados.vue';
+import CalculoComissao from './CalculoComissao.vue';
 
 </script>
