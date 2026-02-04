@@ -1,6 +1,6 @@
 <template>
   <div id="card_resumo">
-    <div class="tituloResumo">
+    <div class="tituloSuperCard">
       <p>Resumo</p>
     </div>
     <div class="conteudoResumo">
@@ -46,52 +46,58 @@
 
 <style scoped>
 #card_resumo {
-  width: 35%;
-}
-
-.tituloResumo {
-  font-size: 1.5rem;
-}
-
-.tituloResumo p {
-  margin: 0;
-  padding: 0;
+  width: 33%;
 }
 
 .conteudoResumo {
+  height: 20rem;
   display: flex;
   justify-content: space-around;
   align-items: stretch;
   border-style: solid;
   border-width: 1px;
   border-color: azure;
-  padding: 5px;
 }
 
 #grafico {
+  width: 50%;
+  padding: 10px;
   display: flex;
   align-items: flex-end;
+  justify-content: space-between;
+}
+
+#conteinerBarraMeta p, #conteinerBarraVendas p {
+  text-align: center;
+  margin-top: 0.5rem;
+}
+
+#dados_resumidos {
+  width: 50%;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 #barraMeta {
   background-color: #0080ff;
   width: 5rem;
   height: 16rem;
-  margin: 5px;
 }
 
 #barraVendas {
   background-color: #009900;
   width: 5rem;
-  height: 7rem;
-  margin: 5px;
 }
 
 .card {
-  width: 10rem;
+  height: 20%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
   text-align: right;
   padding: 5px;
-  margin: 5px;
   border-radius: 5px;
 }
 
@@ -100,8 +106,7 @@
 }
 
 .card p {
-  font-size: 1.3rem;
-  margin: 5px;
+  font-size: 1.6rem;
 }
 
 .meta {
@@ -117,8 +122,7 @@
 }
 
 .pAtingido {
-  background-color: #f9d006;
-  color: rgb(103, 104, 104);
+  background-color: #dbb005;
 }
 </style>
 
