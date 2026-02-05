@@ -3,7 +3,7 @@
         <p class="tituloSuperCard">Calculo de Comissão</p>
         <div class="conteinerCalculoComissao">
             <div class="containerTabelaComissao">
-                <table>
+                <table class="tabelaComissao">
             <thead>
                 <tr class="linhaValores">
                     <th>Níveis de desconto: </th>
@@ -74,8 +74,22 @@
                 <p>{{ formatarNumeroParaPtBr(valorTotalComissao) }}</p>
             </div>
             <div class="card cardDiasUteis">
-                <span>Qtde. dias úteis</span>
-                <p>{{ qtdeDiasUteisNoMes }}</p>
+                <table class="diasDSR">
+                    <thead><tr>
+                        <th>Dias Úteis</th>
+                        <th>Dias Ñ Úteis</th>
+                    </tr></thead>
+                    <tbody><tr>
+                        <td><input class="dsrNumber" type="number" min="22" max="27"
+                                v-model.number="qtdeDiasUteis">
+                            </input>
+                        </td>
+                        <td><input class="dsrNumber" type="number" min="4" max="7"
+                                v-model.number="qtdeDiasNaoUteis">
+                            </input>
+                        </td>
+                    </tr></tbody>
+                </table>
             </div>
             <div class="card cardTotalDSR">
                 <span>Valor DSR</span>
@@ -115,26 +129,26 @@
   justify-content: space-between;
 }
 
-table {
+table.tabelaComissao {
     width: 100%;
     height: 100%;
 }
 
 tr.linhaIndices {
     font-size: 0.9rem;
-    background-color: #2a2307;
+    background-color: #092e50;
 }
 
 tr.linhaValores {
     font-size: 1.1rem;
-    background-color: #061f36;
+    background-color: #03223e;
 }
 
 tr.selected {
-    background-color: rgb(48, 48, 21);
+    background-color: #0f4c85;
 }
 
-td, th {
+table.tabelaComissao tbody td, table.tabelaComissao thead th, table.tabelaComissao tfoot td {
     text-align: right;
     padding: 10px;
 }
@@ -173,6 +187,41 @@ td, th {
   background-color: #dbb005;
 }
 
+table.diasDSR thead tr th {
+    width: 50%;
+    font-size: 0.8rem;
+    padding-bottom: 5px;
+    text-align: center;
+}
+
+table.diasDSR tbody tr td {
+    width: 50%;
+    text-align: center;
+}
+
+.dsrNumber {
+    font-size: 1.2rem;
+    width: 2em;
+    margin: 0;
+    padding: 3px;
+    border: none;
+    text-align: center;
+    background-color: #03700a;
+}
+
+/* Chrome, Safari, Edge, Opera */
+input.dsrNumber::-webkit-outer-spin-button,
+input.dsrNumber::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input.dsrNumber[type=number] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
 </style>
 
 <script setup>
@@ -191,34 +240,10 @@ const valorTotalComissao = computed(() => {
 });
 
 const valorDSR = computed(() => {
-    return (valorTotalComissao.value /  qtdeDiasUteisNoMes * (qtdeDiasNoMes - qtdeDiasUteisNoMes));
+    return (valorTotalComissao.value /  qtdeDiasUteis.value * qtdeDiasNaoUteis.value);
 });
 
-let qtdeDiasUteisNoMes = 26 //ref(obtemQtdeDiasUteisNoMes());
-
-function obtemQtdeDiasUteisNoMes() {
-    const hoje = new Date();
-    const ano = hoje.getFullYear();
-    const mes = hoje.getMonth();
-    let qtdeDiasUteis = 0;
-
-    const diasNoMes = new Date(ano, mes + 1, 0).getDate();
-
-    for (let dia = 1; dia <= diasNoMes; dia++) {
-        const dataAtual = new Date(ano, mes, dia);
-        const diaSemana = dataAtual.getDay();
-        if (diaSemana !== 0) {
-            qtdeDiasUteis++;
-        }
-    }
-    return qtdeDiasUteis;
-}
-const qtdeDiasNoMes = 31 // ref(obtemQtdeDiasNoMes());
-function obtemQtdeDiasNoMes() {
-    const hoje = new Date();
-    const ano = hoje.getFullYear();
-    const mes = hoje.getMonth();
-    return new Date(ano, mes + 1, 0).getDate();
-}
+let qtdeDiasUteis = ref(26);
+let qtdeDiasNaoUteis = ref(4);
 
 </script>
