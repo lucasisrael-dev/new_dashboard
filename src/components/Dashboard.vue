@@ -6,6 +6,11 @@
         <ResumoDados />
         <CalculoComissao />
       </div>
+      <div class="segundaLinha tabelasTop">
+        <div class="topDepartamentos"></div>
+        <div class="topClientes"></div>
+        <div class="topPintores"></div>
+      </div>
     </div>
   </div>
 </template>
