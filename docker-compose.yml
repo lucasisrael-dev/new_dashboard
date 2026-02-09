@@ -1,11 +1,46 @@
 services:
-  app:
+  # --- AMBIENTE DE DESENVOLVIMENTO ---
+  app-dev:
     build:
       context: .
-      target: build-stage # Para usar o estágio de build no dev
+      target: build-stage
+    container_name: vue-app-dev
     ports:
       - "5173:5173"
     volumes:
       - .:/app
       - /app/node_modules
     command: npm run dev
+    profiles: ["dev"] # Só roda se você chamar especificamente
+
+  # --- AMBIENTE DE PRODUÇÃO (NGINX) ---
+  app-prod:
+    build: 
+      context: .
+      # Aqui ele usa o Dockerfile completo (incluindo o estágio do Nginx)
+    container_name: vue-app-prod
+    restart: always
+    networks:
+      - proxy-nw
+    profiles: ["prod"]
+
+  # --- PROXY REVERSO (SSL/HTTPS) ---
+  nginx-proxy:
+    image: 'jc21/nginx-proxy-manager:latest'
+    container_name: nginx-proxy
+    restart: always
+    ports:
+      - '80:80'
+      - '443:443'
+      - '8181:81'
+    volumes:
+      - ./data:/data
+      - ./letsencrypt:/etc/letsencrypt
+    networks:
+      - proxy-nw
+    # O Proxy geralmente fica ligado em ambos os cenários ou apenas prod
+    profiles: ["prod"] 
+
+networks:
+  proxy-nw:
+    driver: bridge
