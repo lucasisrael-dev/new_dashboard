@@ -20,7 +20,7 @@
                     <th>{{ formatarNumeroParaPtBr(DADOS.vendasPorNivelDesconto['D']) }}</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody v-if="DADOS.valorTotalVendas > 0">
                 <tr class="linhaIndices" :class="{ selected: DADOS.nivelMeta === 'X' }">
                     <td><span v-if="DADOS.nivelMeta === 'X'">👉 </span><span>Meta Grau X: </span></td>
                     <td>{{ formatarNumeroParaPtBr(DADOS.tabelaComissoes.X[0]) }}%</td>
