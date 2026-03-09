@@ -12,7 +12,7 @@ export const papaparseConfig = {
 	delimiter: ";",	// auto-detect
 	newline: "\r\n",	// auto-detect
 	skipEmptyLines: true,
-	skipFirstNLines: 37
+	skipFirstNLines: 38
 }
 
 papaparseConfig.transform = function (value, column) {
